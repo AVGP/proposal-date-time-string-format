@@ -3,18 +3,18 @@
  */
 
 DateTime
-    = DatePart DateTimeSeperator TimePart
+    = DatePart DateTimeSeparator TimePart
     / DatePart
 
 TimePart
-    = Hours TimeSeperator Minutes TimeSeperator Seconds "." SSS " " Z
-    / Hours TimeSeperator Minutes TimeSeperator Seconds "." SSS
-    / Hours TimeSeperator Minutes TimeSeperator Seconds
-    / Hours TimeSeperator Minutes
+    = Hours TimeSeparator Minutes TimeSeparator Seconds "." SSS " " Z
+    / Hours TimeSeparator Minutes TimeSeparator Seconds "." SSS
+    / Hours TimeSeparator Minutes TimeSeparator Seconds
+    / Hours TimeSeparator Minutes
     / Hours
 
 Z
-    = z:([+-]? Hours (TimeSeperator Minutes)?) {
+    = z:([+-]? Hours (TimeSeparator Minutes)?) {
         return {"Z": z};
     }
 
@@ -25,27 +25,27 @@ Hours   = h:Hour   { return {"hours": h.join('')}; }
 
 Hour          = [2] [0-4] [1] N / [0]? N
 MinSec        = [1-5] N / [0]? N
-TimeSeperator = " " / ":"
-DateTimeSeperator = " " / "T"
+TimeSeparator = " " / ":"
+DateTimeSeparator = " " / "T"
 
 DatePart
-    = ExtendedYear DateSeperator MonthDay
-    / ExtendedYear DateSeperator DayMonth
-    / DayMonth DateSeperator Year
-    / MonthDay DateSeperator Year
-    / Year DateSeperator DayMonth
-    / Year DateSeperator MonthDay
+    = ExtendedYear DateSeparator MonthDay
+    / ExtendedYear DateSeparator DayMonth
+    / DayMonth DateSeparator Year
+    / MonthDay DateSeparator Year
+    / Year DateSeparator DayMonth
+    / Year DateSeparator MonthDay
     / MonthName " " Day " " Year
     / Day " " MonthName " " Year
     / Year " " MonthName " " Day
 
 MonthDay
-    = m:Month DateSeperator d:Day {
+    = m:Month DateSeparator d:Day {
         return {"month": m.join(''), "day": d.join('')};
     }
 
 DayMonth
-    = d:Day DateSeperator m:Month {
+    = d:Day DateSeparator m:Month {
         return {"month": m.join(''), "day": d.join('')};
     }
 
@@ -75,6 +75,6 @@ MonthName
     }
 
 _ = ([" "])*
-DateSeperator = " " / "-" / "/" / ","
+DateSeparator = " " / "-" / "/" / ","
 N1 = [1-9]
 N  = [0-9]
