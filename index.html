@@ -1,0 +1,27 @@
+<html>
+    <body>
+        <center>
+            <h4>Try out a date: <input id="date"/> <button onClick="parse()">parse!</button></h4>
+            <div id="output"></div>
+        </center>
+        <hr/>
+        <h4>Grammar</h4>
+        <code>
+            DateTime<br/>        = DatePart DateTimeSeperator TimePart<br/>        / DatePart<br/><br/>    TimePart<br/>        = Hours TimeSeperator Minutes TimeSeperator Seconds "." SSS " " Z<br/>        / Hours TimeSeperator Minutes TimeSeperator Seconds "." SSS<br/>        / Hours TimeSeperator Minutes TimeSeperator Seconds<br/>        / Hours TimeSeperator Minutes<br/>        / Hours<br/><br/>    Z<br/>        = [+-]? Hours TimeSeperator Minutes<br/>        / [+-]? Hours<br/><br/>    Seconds = MinSec<br/>    Minutes = MinSec<br/>    SSS = N N N / N N / N<br/><br/>    MinSec<br/>        = [1-5] N / [0]? N<br/>    Hours<br/>        = [2] [0-4] [1] N / [0]? N<br/><br/>    TimeSeperator = " " / ":"<br/>    DateTimeSeperator = " " / "T"<br/><br/>    DatePart<br/>        = ExtendedYear MonthDay<br/>        / ExtendedYear DayMonth<br/>        / Year MonthDay<br/>        / Year DayMonth<br/>        / MonthName " " Day " " Year<br/>        / Day " " MonthName " " Year<br/>        / Year " " MonthName " " Day<br/><br/>    MonthDay<br/>        = DateSeperator Month DateSeperator Day<br/><br/>    DayMonth<br/>        = DateSeperator Day DateSeperator Month<br/><br/>    ExtendedYear<br/>        = ([+-])? N N N N N N<br/><br/>    Year<br/>        = N N N N / N N N / N N / N<br/><br/>    Month<br/>        = [1][0-2] / [0]? N<br/><br/>    Day<br/>        = [3][1] / [2] N / [1] N/ [0]? N1<br/><br/>    MonthName<br/>        = "jan" / "feb" / "march" / "apr" / "may" / "jun" / "jul"<br/>        / "aug" / "sep" / "oct" / "nov" / "dec"<br/><br/>    _ = ([" "])*<br/>    DateSeperator = " " / "-" / "/" / ","<br/>    N1 = [1-9]<br/>    N  = [0-9]<br/>
+        </code>
+    </body>
+    <script>
+        var module = {};
+        var dateField = document.getElementById("date");
+        var output = document.getElementById("output");
+        function parse() {
+            try {
+                output.innerHTML = "Success, the parse tree is below: <br/>";
+                output.innerHTML += module.exports.parse(dateField.value).toSource();
+            } catch (e) {
+                output.innerHTML = e;
+            }
+        }
+    </script>
+    <script src="dateparser.js"></script>
+</html>
