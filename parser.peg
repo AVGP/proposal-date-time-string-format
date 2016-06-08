@@ -1,0 +1,125 @@
+/**
+ * A parser expression grammar for Date.parse
+ */
+
+DateTime
+    = date:DatePart DateTimeSeparator time:TimePart { return {date, time}; }
+    / date:DatePart { return {date}; }
+
+TimePart
+    = hh:Hr TimeSeparator mm:Min TimeSeparator ss:Sec "." ms:Msec _ z:Z {
+        return {hh, mm, ss, ms, z};
+    }
+    / hh:Hr TimeSeparator mm:Min TimeSeparator ss:Sec "." ms:Msec {
+        return {hh, mm, ss, ms};
+    }
+    / hh:Hr TimeSeparator mm:Min TimeSeparator ss:Sec {
+        return {hh, mm, ss};
+    }
+    / hh:Hr TimeSeparator mm:Min {
+        return {hh, mm};
+    }
+    / hh:Hr {
+        return {hh};
+    }
+
+Z
+    = sign:([+-])? hh:Hr mm:(TimeSeparator Min) {
+        if (sign === null) {
+            sign = "+";
+        }
+        return {sign, hh, mm:mm[1]};
+    }
+
+Msec = sss:(N? N? N)      { return sss.join(''); }
+Sec  = s:ZeroToSixty      { return s.join(''); }
+Min  = m:ZeroToSixty      { return m.join(''); }
+Hr   = h:ZeroToTwentyFour { return h.join(''); }
+
+ZeroToTwentyFour = [2] [0-4] / [1] N / [0]? N
+ZeroToSixty      = [1-5] N / [0]? N
+
+TimeSeparator
+    = _
+    / ":"
+
+DateTimeSeparator
+    = _
+    / "T"
+
+DatePart
+    = year:ExtendedYear DateSeparator month:Month DateSeparator day:Day {
+        return {year, month, day};
+    }
+    / year:ExtendedYear DateSeparator day:Day DateSeparator month: Month {
+        return {year, month, day};
+    }
+    / day:Day DateSeparator month:Month DateSeparator Year {
+        return {year, month, day};
+    }
+    / month:Month DateSeparator day:Day DateSeparator Year {
+        return {year, month, day};
+    }
+    / Year DateSeparator day:Day DateSeparator month:Month {
+        return {year, month, day};
+    }
+    / Year DateSeparator month:Month DateSeparator day:Day {
+        return {year, month, day};
+    }
+    / month:MonthName MonthNameSeparator day:Day MonthNameSeparator year:Year {
+        return {year, month, day};
+    }
+    / day:Day MonthNameSeparator month:MonthName MonthNameSeparator year:Year {
+        return {year, month, day};
+    }
+    / year:Year MonthNameSeparator month:MonthName MonthNameSeparator day:Day {
+        return {year, month, day};
+    }
+
+ExtendedYear
+    = y:(([+-])? N N N N N N) {
+        return y.join('');
+    }
+
+Year
+    = y:(N N? N? N?) {
+        y = parseInt(y.join(''));
+        if (y < 50) {
+            y += 2000;
+        } else if (y < 100) {
+            y += 1900;
+        }
+        return y;
+    }
+
+Month
+    = m:([1][0-2]) { return m.join(''); }
+    / m:([0]? N)   { return m.join(''); }
+
+Day
+    = d:([3][1])  { return d.join(''); }
+    / d:([2] N)   { return d.join(''); }
+    / d:([1] N)   { return d.join(''); }
+    / d:([0]? N1) { return d.join(''); }
+
+MonthName
+    = m:("jan"/ "feb" / "mar" / "apr" /
+          "may" / "jun" / "jul" / "aug" /
+          "sep" / "oct" / "nov" / "dec") { return m; }
+
+DateSeparator
+    = _
+    / "-"
+    / "/"
+    / ","
+
+MonthNameSeparator
+    = _
+    / ","
+
+Comment
+    = "(" [a-zA-Z0-9_ \/\\!._'"]* ")"
+
+N1 = [1-9]
+N  = [0-9]
+_  = " "
