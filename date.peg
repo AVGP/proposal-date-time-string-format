@@ -1,0 +1,66 @@
+/**
+ * A parser expression grammar for Date.parse 
+ */
+
+DateTime 
+	= DatePart DateTimeSeperator TimePart
+    / DatePart
+
+TimePart
+	= Hours TimeSeperator Minutes TimeSeperator Seconds "." SSS " " Z
+    / Hours TimeSeperator Minutes TimeSeperator Seconds "." SSS
+    / Hours TimeSeperator Minutes TimeSeperator Seconds
+    / Hours TimeSeperator Minutes
+    / Hours
+
+Z 
+	= [+-]? Hours TimeSeperator Minutes
+    / [+-]? Hours
+
+Seconds = MinSec
+Minutes = MinSec
+SSS = N N N / N N / N
+
+MinSec
+	= [1-5] N / [0]? N
+Hours 
+	= [2] [0-4] [1] N / [0]? N
+
+TimeSeperator = " " / ":"
+DateTimeSeperator = " " / "T"
+
+DatePart
+	= ExtendedYear MonthDay
+    / ExtendedYear DayMonth
+    / Year MonthDay
+    / Year DayMonth
+    / MonthName " " Day " " Year
+    / Day " " MonthName " " Year
+    / Year " " MonthName " " Day
+ 	
+MonthDay
+	= DateSeperator Month DateSeperator Day
+    
+DayMonth
+	= DateSeperator Day DateSeperator Month
+    
+ExtendedYear 
+	= ([+-])? N N N N N N
+
+Year 
+	= N N N N / N N N / N N / N
+
+Month
+	= [1][0-2] / [0]? N
+
+Day
+	= [3][1] / [2] N / [1] N/ [0]? N1
+
+MonthName 
+	= "jan" / "feb" / "march" / "apr" / "may" / "jun" / "jul"
+    / "aug" / "sep" / "oct" / "nov" / "dec"
+
+_ = ([" "])*
+DateSeperator = " " / "-" / "/" / ","
+N1 = [1-9]
+N  = [0-9]
