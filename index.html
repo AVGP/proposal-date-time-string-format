@@ -24,10 +24,14 @@
         var module = {};
         var dateField = document.getElementById("date");
         var output = document.getElementById("output");
+        var months = {jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6, jul: 7, aug: 8, sep: 9, oct: 10, nov: 11, dec: 12};
         function parse() {
             try {
                 var parseTree = module.exports.parse(dateField.value);
                 var date = parseTree.date;
+                if (date.month.length > 2) {
+                    date.month = months[date.month];
+                }
                 var datePart = date.year + "-" + date.month + "-" + date.day
                 var time = parseTree.time;
                 var timePart = "T00:00:00.000-07:00";
