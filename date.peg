@@ -1,64 +1,78 @@
 /**
- * A parser expression grammar for Date.parse 
+ * A parser expression grammar for Date.parse
  */
 
-DateTime 
-	= DatePart DateTimeSeperator TimePart
+DateTime
+    = DatePart DateTimeSeperator TimePart
     / DatePart
 
 TimePart
-	= Hours TimeSeperator Minutes TimeSeperator Seconds "." SSS " " Z
+    = Hours TimeSeperator Minutes TimeSeperator Seconds "." SSS " " Z
     / Hours TimeSeperator Minutes TimeSeperator Seconds "." SSS
     / Hours TimeSeperator Minutes TimeSeperator Seconds
     / Hours TimeSeperator Minutes
     / Hours
 
-Z 
-	= [+-]? Hours TimeSeperator Minutes
-    / [+-]? Hours
+Z
+    = z:([+-]? Hours (TimeSeperator Minutes)?) {
+        return {"Z": z};
+    }
 
-Seconds = MinSec
-Minutes = MinSec
-SSS = N N N / N N / N
+SSS     = sss:(N? N? N) { return {"sss": sss.join('')}; }
+Seconds = s:MinSec { return {"seconds": s.join('')}; }
+Minutes = m:MinSec { return {"minutes": m.join('')}; }
+Hours   = h:Hour   { return {"hours": h.join('')}; }
 
-MinSec
-	= [1-5] N / [0]? N
-Hours 
-	= [2] [0-4] [1] N / [0]? N
-
+Hour          = [2] [0-4] [1] N / [0]? N
+MinSec        = [1-5] N / [0]? N
 TimeSeperator = " " / ":"
 DateTimeSeperator = " " / "T"
 
 DatePart
-	= ExtendedYear MonthDay
-    / ExtendedYear DayMonth
-    / Year MonthDay
-    / Year DayMonth
+    = ExtendedYear DateSeperator MonthDay
+    / ExtendedYear DateSeperator DayMonth
+    / DayMonth DateSeperator Year
+    / MonthDay DateSeperator Year
+    / Year DateSeperator DayMonth
+    / Year DateSeperator MonthDay
     / MonthName " " Day " " Year
     / Day " " MonthName " " Year
     / Year " " MonthName " " Day
- 	
-MonthDay
-	= DateSeperator Month DateSeperator Day
-    
-DayMonth
-	= DateSeperator Day DateSeperator Month
-    
-ExtendedYear 
-	= ([+-])? N N N N N N
 
-Year 
-	= N N N N / N N N / N N / N
+MonthDay
+    = m:Month DateSeperator d:Day {
+        return {"month": m.join(''), "day": d.join('')};
+    }
+
+DayMonth
+    = d:Day DateSeperator m:Month {
+        return {"month": m.join(''), "day": d.join('')};
+    }
+
+ExtendedYear
+    = y:(([+-])? N N N N N N) { return {"year": y}; }
+
+Year
+    = y:(N N? N? N?) {
+        y = parseInt(y.join(''));
+        if (y < 50) {
+            y += 2000;
+        } else if (y < 100) {
+            y += 1900;
+        }
+        return {"year": y};
+    }
 
 Month
-	= [1][0-2] / [0]? N
+    = [1][0-2] / [0]? N
 
 Day
-	= [3][1] / [2] N / [1] N/ [0]? N1
+    = [3][1] / [2] N / [1] N/ [0]? N1
 
-MonthName 
-	= "jan" / "feb" / "march" / "apr" / "may" / "jun" / "jul"
-    / "aug" / "sep" / "oct" / "nov" / "dec"
+MonthName
+    = m:("jan"/ "feb" / "mar" / "apr" / "may" / "jun" / "jul" / "aug" / "sep" / "oct" / "nov" / "dec") {
+        return {"month": m};
+    }
 
 _ = ([" "])*
 DateSeperator = " " / "-" / "/" / ","
