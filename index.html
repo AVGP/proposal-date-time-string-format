@@ -1,5 +1,14 @@
 <html>
     <body>
+        <p>
+            The current <code>Date.parse(...);</code> behavior in JavaScript is not good. Mostly because the spec doesn't clearly define how it should behave!<br/>
+            To remedy this I'm working on a date parsing grammar to be submitted to ECMA so that all implementations will agree on how to parse dates.<br/>
+            For some examples of why this needs to happen check out <b><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1274354">this bug</a></b> on bugzilla.<br/>
+            <br/>
+            You can play around with the WIP below. Please submit pull requests/issues on GitHub if something is wrong / lame. Thx! :)
+            <br/>
+        </p>
+        <hr/>
         <center>
             <h4>Try out a date: <input size=60 value="05-26-88 00:01:23.456-07:00" id="date"/> <button onClick="parse()">parse!</button></h4>
         </center>
