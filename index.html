@@ -1,13 +1,14 @@
 <html>
     <body>
         <center>
-            <h4>Try out a date: <input size=60 value="05-26-88 00:01:23.456 +01:00" id="date"/> <button onClick="parse()">parse!</button></h4>
-            <div id="output"></div>
+            <h4>Try out a date: <input size=60 value="05-26-88 00:01:23.456-07:00" id="date"/> <button onClick="parse()">parse!</button></h4>
         </center>
+        <div id="output"></div>
         <hr/>
         <h4>Grammar</h4>
         <code>
-<br/>DateTime&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;DatePart&nbsp;DateTimeSeparator&nbsp;TimePart<br/>&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;DatePart<br/><br/>TimePart<br/>&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;Hours&nbsp;TimeSeparator&nbsp;Minutes&nbsp;TimeSeparator&nbsp;Seconds&nbsp;"."&nbsp;SSS&nbsp;"&nbsp;"&nbsp;Z<br/>&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;Hours&nbsp;TimeSeparator&nbsp;Minutes&nbsp;TimeSeparator&nbsp;Seconds&nbsp;"."&nbsp;SSS<br/>&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;Hours&nbsp;TimeSeparator&nbsp;Minutes&nbsp;TimeSeparator&nbsp;Seconds<br/>&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;Hours&nbsp;TimeSeparator&nbsp;Minutes<br/>&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;Hours<br/><br/>Z<br/>&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;z:([+-]?&nbsp;Hours&nbsp;(TimeSeparator&nbsp;Minutes)?)&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;{"Z":&nbsp;z};&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;<br/>SSS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;sss:(N?&nbsp;N?&nbsp;N)&nbsp;{&nbsp;return&nbsp;{"sss":&nbsp;sss.join('')};&nbsp;}<br/>Seconds&nbsp;=&nbsp;s:MinSec&nbsp;{&nbsp;return&nbsp;{"seconds":&nbsp;s.join('')};&nbsp;}<br/>Minutes&nbsp;=&nbsp;m:MinSec&nbsp;{&nbsp;return&nbsp;{"minutes":&nbsp;m.join('')};&nbsp;}<br/>Hours&nbsp;&nbsp;&nbsp;=&nbsp;h:Hour&nbsp;&nbsp;&nbsp;{&nbsp;return&nbsp;{"hours":&nbsp;h.join('')};&nbsp;}<br/><br/>Hour&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;[2]&nbsp;[0-4]&nbsp;[1]&nbsp;N&nbsp;/&nbsp;[0]?&nbsp;N<br/>MinSec&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;[1-5]&nbsp;N&nbsp;/&nbsp;[0]?&nbsp;N<br/>TimeSeparator&nbsp;=&nbsp;"&nbsp;"&nbsp;/&nbsp;":"<br/>DateTimeSeparator&nbsp;=&nbsp;"&nbsp;"&nbsp;/&nbsp;"T"<br/><br/>DatePart<br/>&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;ExtendedYear&nbsp;DateSeparator&nbsp;MonthDay<br/>&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;ExtendedYear&nbsp;DateSeparator&nbsp;DayMonth<br/>&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;DayMonth&nbsp;DateSeparator&nbsp;Year<br/>&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;MonthDay&nbsp;DateSeparator&nbsp;Year<br/>&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;Year&nbsp;DateSeparator&nbsp;DayMonth<br/>&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;Year&nbsp;DateSeparator&nbsp;MonthDay<br/>&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;MonthName&nbsp;"&nbsp;"&nbsp;Day&nbsp;"&nbsp;"&nbsp;Year<br/>&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;Day&nbsp;"&nbsp;"&nbsp;MonthName&nbsp;"&nbsp;"&nbsp;Year<br/>&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;Year&nbsp;"&nbsp;"&nbsp;MonthName&nbsp;"&nbsp;"&nbsp;Day<br/>&nbsp;&nbsp;&nbsp;&nbsp;<br/>MonthDay<br/>&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;m:Month&nbsp;DateSeparator&nbsp;d:Day&nbsp;{&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;{"month":&nbsp;m.join(''),&nbsp;"day":&nbsp;d.join('')};&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;&nbsp;&nbsp;<br/>DayMonth<br/>&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;d:Day&nbsp;DateSeparator&nbsp;m:Month&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;{"month":&nbsp;m.join(''),&nbsp;"day":&nbsp;d.join('')};&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;&nbsp;&nbsp;<br/>ExtendedYear&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;y:(([+-])?&nbsp;N&nbsp;N&nbsp;N&nbsp;N&nbsp;N&nbsp;N)&nbsp;{&nbsp;return&nbsp;{"year":&nbsp;y};&nbsp;}<br/><br/>Year&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;y:(N&nbsp;N?&nbsp;N?&nbsp;N?)&nbsp;{&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y&nbsp;=&nbsp;parseInt(y.join(''));<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(y&nbsp;<&nbsp;50)&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y&nbsp;+=&nbsp;2000;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;else&nbsp;if&nbsp;(y&nbsp;<&nbsp;100)&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y&nbsp;+=&nbsp;1900;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;{"year":&nbsp;y};&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;}<br/><br/>Month<br/>&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;[1][0-2]&nbsp;/&nbsp;[0]?&nbsp;N<br/><br/>Day<br/>&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;[3][1]&nbsp;/&nbsp;[2]&nbsp;N&nbsp;/&nbsp;[1]&nbsp;N/&nbsp;[0]?&nbsp;N1<br/><br/>MonthName&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;m:("jan"/&nbsp;"feb"&nbsp;/&nbsp;"mar"&nbsp;/&nbsp;"apr"&nbsp;/&nbsp;"may"&nbsp;/&nbsp;"jun"&nbsp;/&nbsp;"jul"&nbsp;/&nbsp;"aug"&nbsp;/&nbsp;"sep"&nbsp;/&nbsp;"oct"&nbsp;/&nbsp;"nov"&nbsp;/&nbsp;"dec")&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;{"month":&nbsp;m};<br/>&nbsp;&nbsp;&nbsp;&nbsp;}<br/><br/>_&nbsp;=&nbsp;(["&nbsp;"])*<br/>DateSeparator&nbsp;=&nbsp;"&nbsp;"&nbsp;/&nbsp;"-"&nbsp;/&nbsp;"/"&nbsp;/&nbsp;","<br/>N1&nbsp;=&nbsp;[1-9]<br/>N&nbsp;&nbsp;=&nbsp;[0-9]&nbsp;<br/><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code>
+    DateTime<br/>&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;date:DatePart&nbsp;DateTimeSeparator&nbsp;time:TimePart&nbsp;{&nbsp;return&nbsp;{date,&nbsp;time};&nbsp;}<br/>&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;date:DatePart&nbsp;{&nbsp;return&nbsp;{date};&nbsp;}<br/><br/>TimePart<br/>&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;hh:Hr&nbsp;TimeSeparator&nbsp;mm:Min&nbsp;TimeSeparator&nbsp;ss:Sec&nbsp;"."&nbsp;ms:Msec&nbsp;_&nbsp;z:Z&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;{hh,&nbsp;mm,&nbsp;ss,&nbsp;ms,&nbsp;z};<br/>&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;hh:Hr&nbsp;TimeSeparator&nbsp;mm:Min&nbsp;TimeSeparator&nbsp;ss:Sec&nbsp;"."&nbsp;ms:Msec&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;{hh,&nbsp;mm,&nbsp;ss,&nbsp;ms};<br/>&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;hh:Hr&nbsp;TimeSeparator&nbsp;mm:Min&nbsp;TimeSeparator&nbsp;ss:Sec&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;{hh,&nbsp;mm,&nbsp;ss};<br/>&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;hh:Hr&nbsp;TimeSeparator&nbsp;mm:Min&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;{hh,&nbsp;mm};<br/>&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;hh:Hr&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;{hh};<br/>&nbsp;&nbsp;&nbsp;&nbsp;}<br/><br/>Z<br/>&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;sign:([+-])?&nbsp;hh:Hr&nbsp;mm:(TimeSeparator&nbsp;Min)&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(sign&nbsp;===&nbsp;null)&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sign&nbsp;=&nbsp;"+";<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;{sign,&nbsp;hh,&nbsp;mm:mm[1]};<br/>&nbsp;&nbsp;&nbsp;&nbsp;}<br/><br/>Msec&nbsp;=&nbsp;sss:(N?&nbsp;N?&nbsp;N)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;return&nbsp;sss.join('');&nbsp;}<br/>Sec&nbsp;&nbsp;=&nbsp;s:ZeroToSixty&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;return&nbsp;s.join('');&nbsp;}<br/>Min&nbsp;&nbsp;=&nbsp;m:ZeroToSixty&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;return&nbsp;m.join('');&nbsp;}<br/>Hr&nbsp;&nbsp;&nbsp;=&nbsp;h:ZeroToTwentyFour&nbsp;{&nbsp;return&nbsp;h.join('');&nbsp;}<br/><br/>ZeroToTwentyFour&nbsp;=&nbsp;[2]&nbsp;[0-4]&nbsp;/&nbsp;[1]&nbsp;N&nbsp;/&nbsp;[0]?&nbsp;N<br/>ZeroToSixty&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;[1-5]&nbsp;N&nbsp;/&nbsp;[0]?&nbsp;N<br/><br/>TimeSeparator<br/>&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;_<br/>&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;":"<br/><br/>DateTimeSeparator<br/>&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;_<br/>&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;"T"<br/><br/>DatePart<br/>&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;year:ExtendedYear&nbsp;DateSeparator&nbsp;month:Month&nbsp;DateSeparator&nbsp;day:Day&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;{year,&nbsp;month,&nbsp;day};<br/>&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;year:ExtendedYear&nbsp;DateSeparator&nbsp;day:Day&nbsp;DateSeparator&nbsp;month:&nbsp;Month&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;{year,&nbsp;month,&nbsp;day};<br/>&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;day:Day&nbsp;DateSeparator&nbsp;month:Month&nbsp;DateSeparator&nbsp;Year&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;{year,&nbsp;month,&nbsp;day};<br/>&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;month:Month&nbsp;DateSeparator&nbsp;day:Day&nbsp;DateSeparator&nbsp;Year&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;{year,&nbsp;month,&nbsp;day};<br/>&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;Year&nbsp;DateSeparator&nbsp;day:Day&nbsp;DateSeparator&nbsp;month:Month&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;{year,&nbsp;month,&nbsp;day};<br/>&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;Year&nbsp;DateSeparator&nbsp;month:Month&nbsp;DateSeparator&nbsp;day:Day&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;{year,&nbsp;month,&nbsp;day};<br/>&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;month:MonthName&nbsp;MonthNameSeparator&nbsp;day:Day&nbsp;MonthNameSeparator&nbsp;year:Year&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;{year,&nbsp;month,&nbsp;day};<br/>&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;day:Day&nbsp;MonthNameSeparator&nbsp;month:MonthName&nbsp;MonthNameSeparator&nbsp;year:Year&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;{year,&nbsp;month,&nbsp;day};<br/>&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;year:Year&nbsp;MonthNameSeparator&nbsp;month:MonthName&nbsp;MonthNameSeparator&nbsp;day:Day&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;{year,&nbsp;month,&nbsp;day};<br/>&nbsp;&nbsp;&nbsp;&nbsp;}<br/><br/>ExtendedYear<br/>&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;y:(([+-])?&nbsp;N&nbsp;N&nbsp;N&nbsp;N&nbsp;N&nbsp;N)&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;y.join('');<br/>&nbsp;&nbsp;&nbsp;&nbsp;}<br/><br/>Year<br/>&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;y:(N&nbsp;N?&nbsp;N?&nbsp;N?)&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y&nbsp;=&nbsp;parseInt(y.join(''));<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(y&nbsp;<&nbsp;50)&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y&nbsp;+=&nbsp;2000;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;else&nbsp;if&nbsp;(y&nbsp;<&nbsp;100)&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y&nbsp;+=&nbsp;1900;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;y;<br/>&nbsp;&nbsp;&nbsp;&nbsp;}<br/><br/>Month<br/>&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;m:([1][0-2])&nbsp;{&nbsp;return&nbsp;m.join('');&nbsp;}<br/>&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;m:([0]?&nbsp;N)&nbsp;&nbsp;&nbsp;{&nbsp;return&nbsp;m.join('');&nbsp;}<br/><br/>Day<br/>&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;d:([3][1])&nbsp;&nbsp;{&nbsp;return&nbsp;d.join('');&nbsp;}<br/>&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;d:([2]&nbsp;N)&nbsp;&nbsp;&nbsp;{&nbsp;return&nbsp;d.join('');&nbsp;}<br/>&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;d:([1]&nbsp;N)&nbsp;&nbsp;&nbsp;{&nbsp;return&nbsp;d.join('');&nbsp;}<br/>&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;d:([0]?&nbsp;N1)&nbsp;{&nbsp;return&nbsp;d.join('');&nbsp;}<br/><br/>MonthName<br/>&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;m:("jan"/&nbsp;"feb"&nbsp;/&nbsp;"mar"&nbsp;/&nbsp;"apr"&nbsp;/<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"may"&nbsp;/&nbsp;"jun"&nbsp;/&nbsp;"jul"&nbsp;/&nbsp;"aug"&nbsp;/<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"sep"&nbsp;/&nbsp;"oct"&nbsp;/&nbsp;"nov"&nbsp;/&nbsp;"dec")&nbsp;{&nbsp;return&nbsp;m;&nbsp;}<br/><br/>DateSeparator<br/>&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;_<br/>&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;"-"<br/>&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;"/"<br/>&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;","<br/><br/>MonthNameSeparator<br/>&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;_<br/>&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;","<br/><br/>Comment<br/>&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;"("&nbsp;[a-zA-Z0-9_&nbsp;\/\\!._'"]*&nbsp;")"<br/><br/>N1&nbsp;=&nbsp;[1-9]<br/>N&nbsp;&nbsp;=&nbsp;[0-9]<br/>_&nbsp;&nbsp;=&nbsp;"&nbsp;"<br/>
+    </code>
     </body>
     <script>
         var module = {};
@@ -15,8 +16,59 @@
         var output = document.getElementById("output");
         function parse() {
             try {
-                output.innerHTML = "Success, the parse tree is below: <br/>";
-                output.innerHTML += module.exports.parse(dateField.value).toSource();
+                var parseTree = module.exports.parse(dateField.value);
+                var date = parseTree.date;
+                var datePart = date.year + "-" + date.month + "-" + date.day
+                var time = parseTree.time;
+                var timePart = "T00:00:00.000-07:00";
+                if (time !== undefined) {
+                    if (time.hh === undefined ) {
+                        time.hh = "00";
+                    }
+                    if (time.mm === undefined) {
+                        time.mm = "00";
+                    }
+                    if (time.ss === undefined) {
+                        time.ss = "00";
+                    }
+                    if (time.ms === undefined) {
+                        time.ms = "000";
+                    }
+                    if (time.z === undefined) {
+                        time.z = {sign:"+", hh:"01", mm:"00"}
+                    } else {
+                        if (time.z.hh === undefined) {
+                            time.z.hh = "00";
+                        }
+                        if (time.z.mm === undefined) {
+                            time.z.mm = "00";
+                        }
+                    }
+
+                   timePart = "T";
+                   timePart += time.hh;
+                   timePart += ":";
+                   timePart += time.mm;
+                   timePart += ":";
+                   timePart += time.ss;
+                   timePart += ".";
+                   timePart += time.ms;
+                   timePart += time.z.sign;
+                   timePart += time.z.hh;
+                   timePart += ":";
+                   timePart += time.z.mm;
+                }
+
+                output.innerHTML = "<code>new Date('"
+                output.innerHTML += dateField.value + "')</code> with <b>this parser</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ";
+                output.innerHTML += new Date(datePart + timePart).toString();
+                output.innerHTML += "<br/><br/> <code>new Date('"
+                output.innerHTML += dateField.value + "')</code> with <b>existing parser</b> : ";
+                output.innerHTML += new Date(dateField.value).toString();
+                output.innerHTML += "<br/><br/>";
+                output.innerHTML += "Parse Tree: ";
+                output.innerHTML += parseTree.toSource();
+
             } catch (e) {
                 output.innerHTML = e;
             }
